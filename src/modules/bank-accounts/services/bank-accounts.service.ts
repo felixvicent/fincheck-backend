@@ -25,8 +25,32 @@ export class BankAccountsService {
     });
   }
 
-  findAllByUserId(userId: string) {
-    return this.bankAccountsRepository.findMany({ where: { userId } });
+  async findAllByUserId(userId: string) {
+    const bankAccounts = await this.bankAccountsRepository.findMany({
+      where: { userId },
+      include: {
+        transactions: {
+          select: {
+            value: true,
+            type: true,
+          },
+        },
+      },
+    });
+
+    return bankAccounts.map(({ transactions, ...bankAccount }) => {
+      return {
+        ...bankAccount,
+        currentBalance: transactions.reduce(
+          (acc, transaction) =>
+            acc +
+            (transaction.type === 'INCOME'
+              ? transaction.value
+              : -transaction.value),
+          bankAccount.initialBalance,
+        ),
+      };
+    });
   }
 
   async update(
