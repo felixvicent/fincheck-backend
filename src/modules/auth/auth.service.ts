@@ -34,9 +34,9 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const access_token = await this.generateAccessToken(user.id);
+    const accessToken = await this.generateAccessToken(user.id);
 
-    return { access_token };
+    return { accessToken };
   }
 
   async signup(signupDto: SignupDto) {
@@ -79,9 +79,9 @@ export class AuthService {
       },
     });
 
-    const access_token = await this.generateAccessToken(user.id);
+    const accessToken = await this.generateAccessToken(user.id);
 
-    return { access_token };
+    return { accessToken };
   }
 
   private generateAccessToken(userId: string) {
